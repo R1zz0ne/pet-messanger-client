@@ -1,0 +1,11 @@
+.message_send {
+    height: min-content;
+    padding: 0.5rem;
+    background-color: #18191D;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.message_send>input {
+    flex: auto;
+}

@@ -1,0 +1,9 @@
+.search {
+    margin: 0.5rem;
+    display: flex;
+    gap: 0.25rem;
+}
+
+.search>input {
+    flex: auto;
+}

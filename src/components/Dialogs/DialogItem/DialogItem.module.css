@@ -1,0 +1,21 @@
+.dialogItem {
+    height: 50px;
+    padding: 0.1rem;
+    background-color: #282E33;
+    text-align: center;
+    vertical-align: middle;
+    color: #c4c4c4;
+}
+
+.dialogItem:hover {
+    background-color: #353c43;
+}
+
+.dialogItemAct {
+    height: 50px;
+    padding: 0.1rem;
+    background-color: #009687;
+    text-align: center;
+    vertical-align: middle;
+    color: #c4c4c4;
+}

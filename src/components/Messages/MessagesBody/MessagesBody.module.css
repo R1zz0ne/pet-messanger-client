@@ -1,0 +1,9 @@
+.message_body {
+    background-color: #18191D;
+    height: max-content;
+    flex: auto;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
