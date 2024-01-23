@@ -5,6 +5,7 @@ export interface DialogsResponse {
 }
 
 export interface Message {
+    id: number,
     userid: number,
     email: string,
     message: string

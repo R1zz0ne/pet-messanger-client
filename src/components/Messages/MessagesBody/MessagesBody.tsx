@@ -10,7 +10,7 @@ interface MessagesBodyProps {
 const MessagesBody: React.FC<MessagesBodyProps> = ({ messages }) => {
     const { user } = useTypedSelector(state => state.AuthSlice);
 
-    const messageItems: JSX.Element[] = messages.map((el, index) => <MessagesItem key={index} item={el} isMyMess={user.id === el.userid} />);
+    const messageItems: JSX.Element[] = messages.map((el) => <MessagesItem key={el.id} item={el} isMyMess={user.id === el.userid} />);
 
     return (
         <div className={styles.message_body}>
