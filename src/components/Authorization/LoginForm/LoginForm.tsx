@@ -1,20 +1,25 @@
-import { useState } from "react";
-import { useActions } from "../../../hooks/useActions";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTypedSelector } from "../../../hooks/useTypedSelector";
 import styles from "../Authorization.module.css"
 import { Input } from "../../UI/Input/Input";
 import { Button } from "../../UI/Button/Button";
+import { loginEmit } from "../../../http/socket";
 
 const LoginForm: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const { login } = useActions();
     const navigate = useNavigate();
     const { isAuth } = useTypedSelector(state => state.AuthSlice);
 
-    if (isAuth) {
-        return <Navigate to="/" />
+    useEffect(() => {
+        if (isAuth) {
+            navigate('/')
+        }
+    }, [isAuth])
+
+    const handleAuth = () => {
+        loginEmit(email, password)
     }
 
     return (
@@ -31,7 +36,7 @@ const LoginForm: React.FC = () => {
                     value={password}
                     type="text"
                     placeholder="Пароль" />
-                <Button onClick={() => login({ email, password })}>
+                <Button onClick={() => handleAuth()}>
                     Логин
                 </Button>
                 <Button onClick={() => navigate("/registration")}>

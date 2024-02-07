@@ -1,13 +1,9 @@
 import { useTypedSelector } from "../../../hooks/useTypedSelector";
-import { Message } from "../../../models/response/DialogResponse";
+import { IMessagesBodyProps } from "../../../models/UIprops/IMessages";
 import MessagesItem from "./MessageItem/MessageItem";
 import styles from "./MessagesBody.module.css"
 
-interface MessagesBodyProps {
-    messages: Message[]
-}
-
-const MessagesBody: React.FC<MessagesBodyProps> = ({ messages }) => {
+const MessagesBody: React.FC<IMessagesBodyProps> = ({ messages }) => {
     const { user } = useTypedSelector(state => state.AuthSlice);
 
     const messageItems: JSX.Element[] = messages.map((el) => <MessagesItem key={el.id} item={el} isMyMess={user.id === el.userid} />);

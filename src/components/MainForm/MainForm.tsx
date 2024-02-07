@@ -1,31 +1,32 @@
 import { useEffect, useState } from "react";
-import { useActions } from "../../hooks/useActions";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { Navigate } from "react-router-dom";
 import styles from "./MainForm.module.css"
 import Menu from "../Menu/Menu";
 import Messages from "../Messages/Messages";
-import Dialogs, { Users } from "../Dialogs/Dialogs";
-import UserService from "../../services/UserService";
+import Dialogs from "../Dialogs/Dialogs";
+import { checkAuthEmit } from "../../http/socket";
+import { IUsers } from "../../models/store/IUsers";
 
-export const AppForm: React.FC = () => {
-    const { checkAuth, logout } = useActions();
-    const { isAuth, user, isLoading } = useTypedSelector(state => state.AuthSlice);
+export const MainForm: React.FC = () => {
+    const { isAuth } = useTypedSelector(state => state.AuthSlice);
     const { dialogs } = useTypedSelector(state => state.DialogSlice);
     const [isMenu, setIsMenu] = useState<boolean>(false);
     const [isDialog, setIsDialog] = useState<string>('');
-    const [searchUsers, setSearchUsers] = useState<Users[]>([]);
+    const { users } = useTypedSelector(state => state.UsersSlice);
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
-            checkAuth(null);
+            checkAuthEmit();
         }
     }, [])
-
-    const fetchUsers = async (value: string) => {
-        const users = await UserService.getUsers(value);
-        setSearchUsers(users.data);
-    }
+    useEffect(() => {
+        if (isDialog.startsWith('user.')) {
+            const idValue: number = +isDialog.split('.')[1];
+            const dialog = dialogs.find(el => el.userid === idValue);
+            if (dialog) { setIsDialog(`dialog.${dialog.id}`) }
+        }
+    }, [dialogs])
 
     if (!isAuth) {
         return <Navigate to="/authorization" />
@@ -42,7 +43,7 @@ export const AppForm: React.FC = () => {
             const dialog = dialogs.find(el => el.id === idValue)!;
             return dialog
         } else {
-            const user: Users = searchUsers.find(el => el.id === idValue)!;
+            const user: IUsers = users.find(el => el.id === idValue)!;
             return user
                 ? { id: 0, email: user.email, userid: user.id }
                 : { id: -1, email: '', userid: -1 };
@@ -55,8 +56,7 @@ export const AppForm: React.FC = () => {
             <Dialogs setIsMenu={setIsMenu}
                 setIsDialog={setIsDialog}
                 isDialog={isDialog}
-                searchUsers={searchUsers}
-                fetchUsers={fetchUsers} />
+                searchUsers={users} />
             <Messages dialog={pickedDialog()} />
         </div>
     )

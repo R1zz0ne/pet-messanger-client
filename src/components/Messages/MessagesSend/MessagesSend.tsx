@@ -1,26 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "../../UI/Button/Button";
 import { Input } from "../../UI/Input/Input";
 import styles from "./MessagesSend.module.css"
-import DialogService from "../../../services/DialogsService";
+import { setDialogEmit, setMessageEmit } from "../../../http/socket";
+import { IMessagesSendProps } from "../../../models/UIprops/IMessages";
 
-interface MessagesSendProps {
-    id: number,
-    userid: number
-}
-
-const MessagesSend: React.FC<MessagesSendProps> = ({ id, userid }) => {
+const MessagesSend: React.FC<IMessagesSendProps> = ({ id, userid }) => {
     const [message, setMessage] = useState<string>('');
-
-    const setMessageFunction = async (id: number, message: string) => {
-        /*Функция, в которой выполняется отправка сообщения и проверка успешности его доставки*/
-        const response = await DialogService.setMessages(id, message);
-        if (response.status === 200) {
-            setMessage('');
-        } else {
-            throw new Error();
-        }
-    }
 
     const onSubmit = async () => {
         /*Функция нажатия кнопки отправки сообщения:
@@ -35,20 +21,11 @@ const MessagesSend: React.FC<MessagesSendProps> = ({ id, userid }) => {
         сообщение, что поле не заполнено*/
         if (message && message.trim().length > 0) {
             if (id > 0) {
-                try {
-                    await setMessageFunction(id, message);
-                } catch (error) {
-                    console.log('Произошла ошибка при отправке сообщения'); //TODO: избавиться от заглушки
-                }
+                setMessageEmit(id, message);
+                setMessage('');
             } else if (id === 0) {
-                try {
-                    const responseDialog = await DialogService.setDialog(userid);
-                    console.log(responseDialog);
-
-                    await setMessageFunction(responseDialog.data.id, message);
-                } catch (error) {
-                    console.log('Произошла ошибка при отправке сообщения'); //TODO: избавиться от заглушки
-                }
+                setDialogEmit(userid, message);
+                setMessage('');
             } else {
                 console.log('Не выбран диалог'); //TODO: избавиться от заглушки
             }

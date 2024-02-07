@@ -2,28 +2,18 @@ import { useEffect, useState } from "react";
 import DialogItem from "./DialogItem/DialogItem";
 import DialogSearch from "./DialogSearch/DialogSearch";
 import styles from "./Dialogs.module.css"
-import { DialogsResponse } from "../../models/response/DialogResponse";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
-import { useActions } from "../../hooks/useActions";
+import { IDialogs } from "../../models/store/IDialogs";
+import { getDialogsEmit, getUsersEmit } from "../../http/socket";
+import { IDialogsProps } from "../../models/UIprops/IDialogs";
+import { IUsers } from "../../models/store/IUsers";
+import { IDialogsResponse } from "../../models/sockets/ISockets";
 
-interface DialogsProps {
-    setIsMenu: React.Dispatch<React.SetStateAction<boolean>>
-    setIsDialog: React.Dispatch<React.SetStateAction<string>>
-    isDialog: string,
-    searchUsers: Users[],
-    fetchUsers: Function
-}
-export interface Users {
-    id: number,
-    email: string,
-}
-
-const Dialogs: React.FC<DialogsProps> = ({ setIsMenu, setIsDialog, isDialog,
-    searchUsers, fetchUsers }) => {
-    const dialogs: DialogsResponse[] = useTypedSelector(state => state.DialogSlice).dialogs;
-    const { getDialogs } = useActions();
-    const [filterDialogs, setFilterDialogs] = useState<DialogsResponse[]>([]);
-    const [filterUsers, setFilterUsers] = useState<Users[]>([]);
+const Dialogs: React.FC<IDialogsProps> = ({ setIsMenu, setIsDialog, isDialog,
+    searchUsers }) => {
+    const dialogs: IDialogsResponse[] = useTypedSelector(state => state.DialogSlice).dialogs;
+    const [filterDialogs, setFilterDialogs] = useState<IDialogs[]>([]);
+    const [filterUsers, setFilterUsers] = useState<IUsers[]>([]);
     const [searchValue, setSearchValue] = useState<string>('');
 
     useEffect(() => {
@@ -47,12 +37,14 @@ const Dialogs: React.FC<DialogsProps> = ({ setIsMenu, setIsDialog, isDialog,
             setFilterUsers([]);
             setFilterDialogs(dialogs);
         }
-    }, [searchUsers, dialogs])
+    }, [searchUsers, dialogs, searchValue])
     useEffect(() => { //отправка запроса на сервер для поиска юзера, если изменился локальный стейт поля поиска
-        fetchUsers(searchValue);
+        if (searchValue.trim().length > 0) {
+            getUsersEmit(searchValue);
+        }
     }, [searchValue])
     useEffect(() => { //получение списка диалогов при инициализации формы
-        getDialogs();
+        getDialogsEmit();
     }, [])
 
     return (

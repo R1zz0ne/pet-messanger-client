@@ -1,24 +1,20 @@
-import { useActions } from "../../../hooks/useActions"
+import { useTypedSelector } from "../../../hooks/useTypedSelector";
+import { getMessagesEmit } from "../../../http/socket";
+import { IDialogItemProps } from "../../../models/UIprops/IDialogs";
 import styles from "./DialogItem.module.css"
 
-interface DialogItemProps {
-    name: string,
-    id: number,
-    userid: number,
-    isDialog: string,
-    setIsDialog: React.Dispatch<React.SetStateAction<string>>,
-}
-
-const DialogItem: React.FC<DialogItemProps> = ({ name, id, isDialog, setIsDialog, userid }) => {
-    const { getMessages } = useActions();
-
+const DialogItem: React.FC<IDialogItemProps> = ({ name, id, isDialog, setIsDialog, userid }) => {
+    const { dialogs } = useTypedSelector(state => state.DialogSlice);
     const clickHandler = () => {
         /*Выполняется проверка id диалога, чтобы определить выбран существующий диалог или выбран пользователь из результатов поиска.
         Исходя из результата выполняется запись в локальный стейт по выбранному диалогу в родительский компонент и если диалог существует,
         то выполняется запрос на сервер для получения массива сообщений*/
         if (id > 0) {
             setIsDialog(`dialog.${id}`);
-            getMessages(id);
+            const dialog = dialogs.filter(el => el.id === id)
+            if (!dialog[0].messages) {
+                getMessagesEmit(id);
+            }
         } else {
             setIsDialog(`user.${userid}`);
         }
