@@ -1,7 +1,7 @@
-import { MenuProps } from "../../models/UIprops/Menu";
+import { IMenuProps } from "../../models/UIprops/IMenu";
 import styles from "./Menu.module.css";
 
-const Menu: React.FC<MenuProps> = ({ isMenu, setIsMenu }) => {
+const Menu: React.FC<IMenuProps> = ({ isMenu, setIsMenu }) => {
     return (
         <div className={isMenu ? styles.menu : styles.menu_hidden}>
             <div className={isMenu ? styles.menu_nav : styles.menu_nav_hidden}>

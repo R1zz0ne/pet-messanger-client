@@ -1,12 +1,7 @@
-import { Message } from "../../../../models/response/DialogResponse";
+import { IMessagesItemProps } from "../../../../models/UIprops/IMessages";
 import styles from "./MessageItem.module.css"
 
-interface MessagesItemProps {
-    item: Message,
-    isMyMess: boolean
-}
-
-const MessagesItem: React.FC<MessagesItemProps> = ({ item, isMyMess }) => {
+const MessagesItem: React.FC<IMessagesItemProps> = ({ item, isMyMess }) => {
     return (
         <div className={isMyMess ? styles.message_me : styles.message_comp}>
             <div>{item.email}</div>
