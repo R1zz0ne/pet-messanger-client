@@ -1,10 +1,7 @@
+import { IMessagesHeaderProps } from "../../../models/UIprops/IMessages";
 import styles from "./MessagesHeader.module.css"
 
-interface MessagesHeaderProps {
-    dialogName: string
-}
-
-const MessagesHeader: React.FC<MessagesHeaderProps> = ({ dialogName }) => {
+const MessagesHeader: React.FC<IMessagesHeaderProps> = ({ dialogName }) => {
     return (
         <div className={styles.messages_header}>
             {dialogName}

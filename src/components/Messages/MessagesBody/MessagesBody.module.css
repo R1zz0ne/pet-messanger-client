@@ -1,9 +1,10 @@
 .message_body {
     background-color: #18191D;
-    height: max-content;
+    height: 100%;
     flex: auto;
     padding: 0.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    overflow-y: auto;
 }
